@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Deeplink Test</string>
+    <string name="deeplink_label_nearbypasal">Nearby pasal deeplink</string>
+</resources>
