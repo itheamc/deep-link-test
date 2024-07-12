@@ -1,8 +1,9 @@
 package com.itheamc.deeplinktest.ui.screens
 
-import android.Manifest
-import android.content.Intent
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,11 +13,16 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.itheamc.deeplinktest.helpers.FileSaverHelper
 
@@ -24,11 +30,13 @@ import com.itheamc.deeplinktest.helpers.FileSaverHelper
 fun MainScreen(
     modifier: Modifier = Modifier,
     data: Map<String, String>,
-    requestPermissionLauncher: ActivityResultLauncher<String>,
-    pickFileLauncher: ActivityResultLauncher<Intent>
+    fileSaverHelper: FileSaverHelper,
+    createFileLauncher: ActivityResultLauncher<String>
 ) {
 
     val context = LocalContext.current
+    val clipboardManager = LocalClipboardManager.current
+    val interactionSource = remember { MutableInteractionSource() }
 
     Column(
         modifier = modifier
@@ -50,9 +58,33 @@ fun MainScreen(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        modifier = Modifier.weight(3f),
+                        modifier = Modifier
+                            .weight(3f)
+                            .clickable(
+                                enabled = it.key.lowercase() == "uri",
+                                interactionSource = interactionSource,
+                                indication = null,
+                                onClick = {
+                                    // Copy the value to clipboard
+                                    clipboardManager.setText(
+                                        buildAnnotatedString {
+                                            append(it.value)
+                                        }
+                                    )
+
+                                    // SHow toast message
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            "Uri copied to clipboard!",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
+                                }
+                            ),
                         text = it.value,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = if (it.key.lowercase() == "uri") Color.Magenta else MaterialTheme.colorScheme.primary,
+                        textDecoration = if (it.key.lowercase() == "uri") TextDecoration.Underline else TextDecoration.None
                     )
                 }
             }
@@ -64,31 +96,23 @@ fun MainScreen(
             )
             Text(
                 modifier = Modifier.padding(top = 8.dp, bottom = 12.dp),
-                text = "Copy browsable link from the below button and try to open with browser",
+                text = "Get a file with browsable link from the below button and try to open with browser",
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center
             )
-            // Button to copy the link text
+
             ElevatedButton(
                 onClick = {
-
-                    val granted = FileSaverHelper.hasStoragePermission(context)
-
-                    if (!granted) {
-                        requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    // Check if storage permission is granted
+                    if (!fileSaverHelper.hasStoragePermission()) {
+                        fileSaverHelper.requestStoragePermission()
                         return@ElevatedButton
                     }
-
                     // Permission granted, proceed with your operation
-                    pickFileLauncher.launch(Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                        addCategory(Intent.CATEGORY_OPENABLE)
-                        type = "text/html"
-                        putExtra(Intent.EXTRA_TITLE, "my_html_file.html")
-                    })
-
+                    createFileLauncher.launch("test_html_file.html")
                 },
             ) {
-                Text(text = "Download Test File")
+                Text(text = "Get a Test File")
             }
         }
     }
