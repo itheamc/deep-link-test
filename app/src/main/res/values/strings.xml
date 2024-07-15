@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Deeplink Test</string>
-    <string name="deeplink_label_nearbypasal">Nearby pasal deeplink</string>
+    <string name="deeplink_http_host_label_nearbypasal">Nearby pasal HTTP host deeplink</string>
+    <string name="deeplink_naxa_host_label_nearbypasal">Nearby pasal custom host deeplink</string>
     <string name="channel_name">File Created Notification</string>
     <string name="channel_description">You will get notification for the file saved status through this channel.</string>
 </resources>

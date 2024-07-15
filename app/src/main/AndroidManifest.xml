@@ -30,7 +30,7 @@
 
             <intent-filter
                 android:autoVerify="true"
-                android:label="@string/deeplink_label_nearbypasal">
+                android:label="@string/deeplink_http_host_label_nearbypasal">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -43,7 +43,7 @@
                 <!-- note that the leading "/" is required for pathPrefix-->
             </intent-filter>
 
-            <intent-filter android:label="@string/deeplink_label_nearbypasal">
+            <intent-filter android:label="@string/deeplink_naxa_host_label_nearbypasal">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
