@@ -36,10 +36,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "https://www.nearbypasal.com/link-test” -->
-                <data
-                    android:host="www.nearbypasal.com"
-                    android:pathPrefix="/link-test"
-                    android:scheme="https" />
+                <data android:scheme="https"/>
+                <data android:host="www.nearbypasal.com"/>
+                <data android:host="nearbypasal.com"/>
+                <data android:pathPrefix="/link-test"/>
                 <!-- note that the leading "/" is required for pathPrefix-->
             </intent-filter>
 

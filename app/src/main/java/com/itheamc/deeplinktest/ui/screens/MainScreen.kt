@@ -19,12 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.itheamc.deeplinktest.helpers.FileSaverHelper
+import com.itheamc.deeplinktest.helpers.VersionInfoHelper
 
 @Composable
 fun MainScreen(
@@ -89,31 +93,56 @@ fun MainScreen(
                 }
             }
         } else {
-            Text(
-                text = "Hey, I'm a deeplink test app!",
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                modifier = Modifier.padding(top = 8.dp, bottom = 12.dp),
-                text = "Get a file with browsable link from the below button and try to open with browser",
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center
-            )
-
-            ElevatedButton(
-                onClick = {
-                    // Check if storage permission is granted
-                    if (!fileSaverHelper.hasStoragePermission()) {
-                        fileSaverHelper.requestStoragePermission()
-                        return@ElevatedButton
-                    }
-                    // Permission granted, proceed with your operation
-                    createFileLauncher.launch("test_html_file.html")
-                },
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "Get a Test File")
+                Text(
+                    text = "Hey, I'm a deeplink test app!",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    modifier = Modifier.padding(top = 8.dp, bottom = 12.dp),
+                    text = "Get a file with browsable link from the below button and try to open with browser",
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.Center
+                )
+
+                ElevatedButton(
+                    onClick = {
+                        // Check if storage permission is granted
+                        if (!fileSaverHelper.hasStoragePermission()) {
+                            fileSaverHelper.requestStoragePermission()
+                            return@ElevatedButton
+                        }
+                        // Permission granted, proceed with your operation
+                        createFileLauncher.launch("test_html_file.html")
+                    },
+                ) {
+                    Text(text = "Get a Test File")
+                }
             }
+            // Add text to the bottom of the column
+            Text(
+                text = buildAnnotatedString {
+                    append("Version ")
+                    this.append(
+                        AnnotatedString(
+                            text = VersionInfoHelper.getVersionName(context),
+                            spanStyle = SpanStyle(
+                                color = MaterialTheme.colorScheme.primary,
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        )
+                    )
+                },
+                style = MaterialTheme.typography.bodySmall
+            )
         }
     }
 }

@@ -57,9 +57,9 @@ class FileSaverHelper private constructor(
                             * { font-family: system-ui; font-size:24px; }
                         </style>
                     
-                        Test deeplink with https scheme
-                    
-                        <a href="$deeplinkUri">Open Click here</a>
+                        Test deeplink with https scheme  <a href="$deeplinkUri">Click here</a>
+                        </br>
+                        Test deeplink with naxa scheme  <a href="${deeplinkUri.toString().replace("https", "naxa")}">Click here</a>
                     """.trimIndent()
 
         val outputStream = contentResolver.openOutputStream(uri)
